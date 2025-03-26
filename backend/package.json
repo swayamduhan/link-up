@@ -1,0 +1,20 @@
+{
+  "name": "linkup-backend",
+  "version": "1.0.0",
+  "description": "backend for p2p video communication",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1"
+  }
+}
