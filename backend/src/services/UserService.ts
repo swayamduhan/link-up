@@ -81,33 +81,33 @@ export class UserService {
 
     // initialize socket handlers for user, to use as signalling server
     initSocketHandlers(socket: Socket) {
-        socket.on("offer", ({ sdp, roomId } : any) => {
+        socket.on("offer", ({ offer, roomId } : any) => {
             const user = this.roomService.getOtherUser(roomId, socket.id);
             if(!user) {
                 console.error("User not found");
                 return;
             }
-            user.socket.emit("offer", { sdp });
+            user.socket.emit("offer", { offer });
         })
 
-        socket.on("answer", ({ sdp, roomId } : any) => {
+        socket.on("answer", ({ answer, roomId } : any) => {
             const user = this.roomService.getOtherUser(roomId, socket.id);
             if(!user) {
                 console.error("User not found");
                 return;
             }
 
-            user.socket.emit("answer", { sdp });
+            user.socket.emit("answer", { answer });
         })
 
-        socket.on("add_ice_candidate", ({ candidate, roomId, type } : any) => {
+        socket.on("send-ice-candidate", ({ candidate, roomId } : any) => {
             const user = this.roomService.getOtherUser(roomId, socket.id);
             if(!user) {
                 console.error("User not found");
                 return;
             }
 
-            user.socket.emit("add_ice_candidate", { candidate, type });
+            user.socket.emit("add-ice-candidate", { candidate });
         })
     }
 }

@@ -25,9 +25,9 @@ export class RoomService {
         user1.roomId = roomId;
         user2.roomId = roomId;
 
-        // send room id to both users
-        user1.socket.emit("room_id", roomId);
-        user2.socket.emit("room_id", roomId);
+        // send room id to both users and set the offer sending and receiving party
+        user1.socket.emit("send-offer", roomId);
+        user2.socket.emit("receive-offer", roomId);
     }
 
     getRoom(id: string) {
