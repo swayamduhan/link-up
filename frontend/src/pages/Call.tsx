@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import CallComponent from "../components/CallComponent";
+
+// TODO: 
+// handle disconnection on frontend
+// handle disconnection on backend ( send signal to other user that you have disconnected )
+
 
 export default function Call() {
     const socketRef = useRef<Socket | null>(null);
@@ -9,13 +15,43 @@ export default function Call() {
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const remoteVideoRef = useRef<HTMLVideoElement>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
+    const remoteStreamRef = useRef<MediaStream | null>(null)
     const roomIdRef = useRef<string | null>(null);
     const [receivedVideo, setReceivedVideo] = useState<boolean>(false);
+    const [localStreamSetup, setLocalStreamSetup] = useState<boolean>(false);
 
+
+    // WORKFLOW : don't connect to the socket until local stream setup is done
     useEffect(() => {
-        if(!socketRef.current){
+        initLocalStream();
+        if(localStreamSetup && !socketRef.current){
             socketRef.current = io("http://localhost:8080");
             initSocketHandlers(socketRef.current);
+        }
+    }, [localStreamSetup]);
+
+    useEffect(() => {
+        if(receivedVideo && remoteVideoRef.current && localVideoRef.current){
+            remoteVideoRef.current.srcObject = remoteStreamRef.current
+            localVideoRef.current.srcObject = localStreamRef.current
+        } else {
+            console.log("unable to add remote stream :(")
+        }
+    }, [receivedVideo])
+
+    const initLocalStream = useCallback(async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            })
+            localStreamRef.current = stream;
+            if(localVideoRef.current){
+                localVideoRef.current.srcObject = stream;
+                setLocalStreamSetup(true);
+            }
+        } catch (err) {
+            alert("Error accessing media devices" + err);
         }
     }, []);
 
@@ -86,7 +122,6 @@ export default function Call() {
             console.error("Room ID is not set");
             return;
         };
-        await getUserMedia();
 
         const configuration : RTCConfiguration = {'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]}
         const pc = new RTCPeerConnection(configuration);
@@ -111,13 +146,8 @@ export default function Call() {
 
         pc.ontrack = (event: RTCTrackEvent) => {
             console.log("event streams: ", event.streams)
-            if(remoteVideoRef.current){
-                console.log("adding remote tracks")
-                setReceivedVideo(true);
-                remoteVideoRef.current.srcObject = event.streams[0];
-            } else {
-                console.log("remote video ref not found")
-            }
+            remoteStreamRef.current = event.streams[0]
+            setReceivedVideo(true)
         }
 
 
@@ -129,30 +159,27 @@ export default function Call() {
         
     }, []);
 
-    const getUserMedia = useCallback(async () => {
-        try{
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: true
-            })
-            localStreamRef.current = stream;
-            if(localVideoRef.current){
-                localVideoRef.current.srcObject = stream;
-            }
-        } catch(error){
-            console.error("Error accessing media devices", error);
-        }
-    }, []);
-
     
     return (
-        <div>
-            <h1>Call</h1>
+        <div className="font-thin w-full min-h-screen bg-neutral-900 text-neutral-100">
+            <div className="max-w-[2000px] h-full">
+                {/* Subtle Navbar with Name */}
+                <div className="min-h-screen flex flex-col">
+                    <div className="relative text-center pt-4 text-3xl">
+                        LinkUp<span className="absolute top-3 text-sm">&reg;</span>
+                    </div>
+                    {/* main content */}
+                    <CallComponent localStreamRef={localStreamRef} localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} receivedVideo={receivedVideo} />
+                </div>
+
+                {/* footer on scroll */}
+                <footer>Hello this is footer</footer>
+            </div>
+            {/* <h1>Call</h1>
             <p>{socketId}</p>
             <p>You are a offer {userType || "________"}</p>
             <video id="localVideo" autoPlay playsInline controls={false} ref={localVideoRef}></video>
-            <video id="remoteVideo" autoPlay playsInline controls={false} ref={remoteVideoRef} style={receivedVideo ? { display: "block" } : { display: "none" }}></video>
-            {receivedVideo ? <p>Received video</p> : <p>Waiting for connection...</p>}
+            <video id="remoteVideo" autoPlay playsInline controls={false} ref={remoteVideoRef} style={receivedVideo ? { display: "block" } : { display: "none" }}></video> */}
         </div>
     )
 }
