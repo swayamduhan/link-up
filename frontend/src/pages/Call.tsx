@@ -34,6 +34,8 @@ export default function Call() {
         if(receivedVideo && remoteVideoRef.current && localVideoRef.current){
             remoteVideoRef.current.srcObject = remoteStreamRef.current
             localVideoRef.current.srcObject = localStreamRef.current
+        } else if(!receivedVideo && localVideoRef.current){
+            localVideoRef.current.srcObject = localStreamRef.current
         } else {
             console.log("unable to add remote stream :(")
         }
@@ -115,6 +117,13 @@ export default function Call() {
             console.log("ice candidate added", candidate)
         })
 
+        socket.on("room-disconnect", () => {
+            peerConnectionRef.current = null
+            remoteStreamRef.current = null
+            roomIdRef.current = null
+            setReceivedVideo(false)
+        })
+
     }, []);
 
     const initPeerConnection = useCallback(async (roomId : string) => {
@@ -169,17 +178,12 @@ export default function Call() {
                         LinkUp<span className="absolute top-3 text-sm">&reg;</span>
                     </div>
                     {/* main content */}
-                    <CallComponent localStreamRef={localStreamRef} localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} receivedVideo={receivedVideo} />
+                    <CallComponent localStreamRef={localStreamRef} remoteStreamRef={remoteStreamRef} localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} receivedVideo={receivedVideo} />
                 </div>
 
                 {/* footer on scroll */}
                 <footer>Hello this is footer</footer>
             </div>
-            {/* <h1>Call</h1>
-            <p>{socketId}</p>
-            <p>You are a offer {userType || "________"}</p>
-            <video id="localVideo" autoPlay playsInline controls={false} ref={localVideoRef}></video>
-            <video id="remoteVideo" autoPlay playsInline controls={false} ref={remoteVideoRef} style={receivedVideo ? { display: "block" } : { display: "none" }}></video> */}
         </div>
     )
 }
