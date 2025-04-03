@@ -39,6 +39,7 @@ export class UserService {
     }
 
     removeUser(socket: Socket) {
+        // if user was a part of a room, tell other user to disconnect and emit an event
         // remove user from users and queue
         const user = this.getUserBySocketId(socket.id);
         this.users = this.users.filter(x => x.socket.id != socket.id);
@@ -52,10 +53,11 @@ export class UserService {
         // take left user from room and back to queue
         const connectedRoom = this.roomService.getRoom(user.roomId);
         if(connectedRoom) {
-            const leftUser = this.roomService.getOtherUser(user.roomId, socket.id);
-            if(leftUser) {
-                this.queue.push(leftUser);
-                console.log("User left in room with socket id: ", leftUser.socket.id, " added back to queue");
+            const otherUser = this.roomService.getOtherUser(user.roomId, socket.id);
+            if(otherUser) {
+                otherUser.socket.emit("room-disconnect")
+                this.queue.push(otherUser);
+                console.log("User left in room with socket id: ", otherUser.socket.id, " added back to queue");
             }
             this.roomService.removeRoom(user.roomId);
             console.log("Room with id: ", user.roomId, " removed");
