@@ -111,5 +111,19 @@ export class UserService {
 
             user.socket.emit("add-ice-candidate", { candidate });
         })
+
+
+        socket.on("skip", ({ roomId } : { roomId : string }) => {
+            // remove users from room and back to queue for another match
+            const emitUser = this.getUserBySocketId(socket.id)
+            const otherUser = this.roomService.getOtherUser(roomId, socket.id)
+
+            this.roomService.removeRoom(roomId)
+            if(emitUser) this.queue.push(emitUser)
+            if(otherUser) {
+                otherUser.socket.emit("skip-received")
+                this.queue.push(otherUser)
+            }
+        })
     }
 }

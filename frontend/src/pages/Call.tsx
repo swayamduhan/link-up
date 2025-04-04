@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import CallComponent from "../components/CallComponent";
+import "./call.css"
+import { useChatStore } from "../store/chatStore";
 
-// TODO: 
-// handle disconnection on frontend
-// handle disconnection on backend ( send signal to other user that you have disconnected )
+
+// TODO: fix skip button logic, not working on receiving user
 
 
 export default function Call() {
@@ -19,6 +20,8 @@ export default function Call() {
     const roomIdRef = useRef<string | null>(null);
     const [receivedVideo, setReceivedVideo] = useState<boolean>(false);
     const [localStreamSetup, setLocalStreamSetup] = useState<boolean>(false);
+    const dataChannelRef = useRef<RTCDataChannel | null>(null)
+    const { addChat } = useChatStore()
 
 
     // WORKFLOW : don't connect to the socket until local stream setup is done
@@ -72,7 +75,12 @@ export default function Call() {
             console.log("received room_id: ", roomId);
             roomIdRef.current = roomId;
 
-            await initPeerConnection(roomId);
+            const pc = await initPeerConnection(roomId);
+            if(pc){
+                initDataChannel(pc)
+            } else {
+                console.error("couldn't setup data channel, pc not found")
+            }
 
             // create offer, set local description and send offer
             console.log("sending offer")
@@ -124,6 +132,11 @@ export default function Call() {
             setReceivedVideo(false)
         })
 
+        socket.on("skip-received", () => {
+            console.log("got skipped lol")
+            handleSkip()
+        })
+
     }, []);
 
     const initPeerConnection = useCallback(async (roomId : string) => {
@@ -146,6 +159,19 @@ export default function Call() {
 
         console.log("video set up done")
 
+        pc.ondatachannel = (e) => {
+            const dc = e.channel
+            dataChannelRef.current = dc
+
+            dc.onmessage = (e) => {
+                addChat(e.data, "RECEIVED")
+            }
+
+            dc.onopen = () => {
+                console.log("data channel connected by receiver!")
+            }
+        }
+
         pc.onicecandidate = (event) => {
             if(event.candidate){
                 console.log("sending ice candidate", event.candidate)
@@ -161,12 +187,58 @@ export default function Call() {
 
 
 
-        pc.onnegotiationneeded = (event: Event) => {
+        pc.onnegotiationneeded = (event) => {
             console.log("negotiation needed!")
             // to setup addition/removal of tracks
         }
         
+        return pc
     }, []);
+
+    const initDataChannel = useCallback((pc : RTCPeerConnection) => {
+        console.log("setting up a dc")
+        const dc = pc.createDataChannel("chat-channel")
+        dataChannelRef.current = dc
+
+        dc.onopen = () => {
+            console.log("data channel opened by offer sender!")
+        }
+
+        dc.onmessage = (e) => {
+            console.log("received message: ", e.data)
+            addChat(e.data, "RECEIVED")
+        }
+    }, [])
+
+    function handleSkip(){
+        if(!receivedVideo) return
+        if(remoteStreamRef.current){
+            remoteStreamRef.current.getTracks().forEach(track => track.stop())
+            remoteStreamRef.current = null
+        }
+        
+        if(dataChannelRef.current){
+            dataChannelRef.current.close()
+            dataChannelRef.current.onmessage = null
+            dataChannelRef.current.onopen = null
+            dataChannelRef.current = null
+        }
+        
+        if(peerConnectionRef.current){
+            peerConnectionRef.current.close()
+            peerConnectionRef.current.onicecandidate = null
+            peerConnectionRef.current.ondatachannel = null
+            peerConnectionRef.current.ontrack = null
+            peerConnectionRef.current.onnegotiationneeded = null
+            peerConnectionRef.current = null
+        }
+
+        if(socketRef.current){
+            socketRef.current.emit("skip", { roomId: roomIdRef.current })
+        }
+        roomIdRef.current = null
+        setReceivedVideo(false)
+    }
 
     
     return (
@@ -178,7 +250,7 @@ export default function Call() {
                         LinkUp<span className="absolute top-3 text-sm">&reg;</span>
                     </div>
                     {/* main content */}
-                    <CallComponent localStreamRef={localStreamRef} remoteStreamRef={remoteStreamRef} localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} receivedVideo={receivedVideo} />
+                    <CallComponent handleSkip={handleSkip} localStreamRef={localStreamRef} remoteStreamRef={remoteStreamRef} localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} receivedVideo={receivedVideo} dataChannelRef={dataChannelRef} />
                 </div>
 
                 {/* footer on scroll */}
