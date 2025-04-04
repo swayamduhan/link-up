@@ -10,7 +10,8 @@ export default function CallComponent({
     remoteVideoRef,
     receivedVideo,
     dataChannelRef,
-    handleSkip
+    handleSkip,
+    handleBack
 }: { 
     localStreamRef: React.RefObject<MediaStream | null>, 
     remoteStreamRef: React.RefObject<MediaStream | null>, 
@@ -18,7 +19,8 @@ export default function CallComponent({
     remoteVideoRef: React.RefObject<HTMLVideoElement | null>, 
     receivedVideo: boolean, 
     dataChannelRef: React.RefObject<RTCDataChannel | null> ,
-    handleSkip: () => void
+    handleSkip: () => void,
+    handleBack: () => void
 }) {
 
     const [chatOpen, setChatOpen] = useState<Boolean>(false)
@@ -102,7 +104,7 @@ export default function CallComponent({
                 <motion.div layout="position" layoutId="btn-container" className="relative flex-1 flex justify-around items-center text-3xl gap-10 px-10">
                     <SidebarButton onClick={handleSkip} layoutId="skip-btn" label="Skip" />
                     <SidebarButton layoutId="pause-btn" label="Pause" />
-                    <SidebarButton layoutId="back-btn" label="Back" />
+                    <SidebarButton onClick={handleBack} layoutId="back-btn" label="Back" />
                 </motion.div>
             </motion.div>
             </>
@@ -155,7 +157,7 @@ export default function CallComponent({
                     <motion.div layout="position" className="relative flex-3 flex flex-col gap-2" layoutId="btn-container">
                         <SidebarButton onClick={handleSkip} layoutId="skip-btn" label="Skip" />
                         <SidebarButton layoutId="pause-btn" label="Pause" />
-                        <SidebarButton layoutId="back-btn" label="Back" />
+                        <SidebarButton onClick={handleBack} layoutId="back-btn" label="Back" />
                     </motion.div>
                 </motion.div>
             </>

@@ -113,17 +113,25 @@ export class UserService {
         })
 
 
+        // to make more secure, don't rely on frontend to give roomId
         socket.on("skip", ({ roomId } : { roomId : string }) => {
             // remove users from room and back to queue for another match
+            console.log("received room id for skip: " + roomId)
             const emitUser = this.getUserBySocketId(socket.id)
             const otherUser = this.roomService.getOtherUser(roomId, socket.id)
 
             this.roomService.removeRoom(roomId)
-            if(emitUser) this.queue.push(emitUser)
-            if(otherUser) {
-                otherUser.socket.emit("skip-received")
-                this.queue.push(otherUser)
+            if(emitUser){
+                this.queue.push(emitUser)
+                emitUser.roomId = null
             }
+            if(otherUser) {
+                otherUser.socket.emit("peer-skipped")
+                this.queue.push(otherUser)
+                otherUser.roomId = null
+            }
+
+            this.matchUsersFromQueue()
         })
     }
 }

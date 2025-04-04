@@ -3,6 +3,7 @@ import { io, Socket } from "socket.io-client";
 import CallComponent from "../components/CallComponent";
 import "./call.css"
 import { useChatStore } from "../store/chatStore";
+import { Link, useNavigate } from "react-router-dom";
 
 
 // TODO: fix skip button logic, not working on receiving user
@@ -22,6 +23,7 @@ export default function Call() {
     const [localStreamSetup, setLocalStreamSetup] = useState<boolean>(false);
     const dataChannelRef = useRef<RTCDataChannel | null>(null)
     const { addChat } = useChatStore()
+    const navigate = useNavigate()
 
 
     // WORKFLOW : don't connect to the socket until local stream setup is done
@@ -132,9 +134,9 @@ export default function Call() {
             setReceivedVideo(false)
         })
 
-        socket.on("skip-received", () => {
-            console.log("got skipped lol")
-            handleSkip()
+        socket.on("peer-skipped", () => {
+            setReceivedVideo(false)
+            peerConnectionCleanup()
         })
 
     }, []);
@@ -211,7 +213,48 @@ export default function Call() {
     }, [])
 
     function handleSkip(){
-        if(!receivedVideo) return
+        if(!receivedVideo){
+            console.log("unwanted skip")
+            return
+        }
+
+        if(socketRef.current){
+            socketRef.current.emit("skip", { roomId: roomIdRef.current })
+        }
+
+        peerConnectionCleanup()
+        setReceivedVideo(false)
+    }
+
+    function handleBack(){
+        // remove socket connection
+        if(socketRef.current){
+            socketRef.current.disconnect()
+        }
+
+        // cleanup peer connection
+        peerConnectionCleanup()
+
+        // remove local media
+        if(localStreamRef.current){
+            localStreamRef.current.getTracks().forEach(track => {
+                localStreamRef.current?.removeTrack(track)
+                track.stop()
+            })
+            localStreamRef.current = null
+        }
+
+        navigator.mediaDevices.getUserMedia({ video: false, audio: false })
+        .then((stream) => {
+            stream.getTracks().forEach(track => track.stop());
+        })
+        .catch(() => {})
+
+        // link back to home
+        navigate("/")
+    }
+
+    function peerConnectionCleanup(){
         if(remoteStreamRef.current){
             remoteStreamRef.current.getTracks().forEach(track => track.stop())
             remoteStreamRef.current = null
@@ -233,13 +276,9 @@ export default function Call() {
             peerConnectionRef.current = null
         }
 
-        if(socketRef.current){
-            socketRef.current.emit("skip", { roomId: roomIdRef.current })
-        }
         roomIdRef.current = null
-        setReceivedVideo(false)
     }
-
+        
     
     return (
         <div className="font-thin w-full min-h-screen bg-neutral-900 text-neutral-100">
@@ -250,7 +289,7 @@ export default function Call() {
                         LinkUp<span className="absolute top-3 text-sm">&reg;</span>
                     </div>
                     {/* main content */}
-                    <CallComponent handleSkip={handleSkip} localStreamRef={localStreamRef} remoteStreamRef={remoteStreamRef} localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} receivedVideo={receivedVideo} dataChannelRef={dataChannelRef} />
+                    <CallComponent handleBack={handleBack} handleSkip={handleSkip} localStreamRef={localStreamRef} remoteStreamRef={remoteStreamRef} localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} receivedVideo={receivedVideo} dataChannelRef={dataChannelRef} />
                 </div>
 
                 {/* footer on scroll */}
