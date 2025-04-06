@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client";
 import CallComponent from "../components/CallComponent";
 import "./call.css"
 import { useChatStore } from "../store/chatStore";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 // TODO: fix skip button logic, not working on receiving user
@@ -12,8 +12,6 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Call() {
     const socketRef = useRef<Socket | null>(null);
     const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
-    const [socketId, setSocketId] = useState<string | null>(null);
-    const [userType, setUserType] = useState<"sender" | "receiver" | null>(null);
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const remoteVideoRef = useRef<HTMLVideoElement>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
@@ -64,7 +62,7 @@ export default function Call() {
 
     const initSocketHandlers = useCallback((socket: Socket) => {
         socket.on("connect", () => {
-            setSocketId(socket.id || "");
+            console.log("connected to socket")
         });
 
         socket.on("disconnect", () => {
@@ -73,7 +71,6 @@ export default function Call() {
 
         socket.on("send-offer", async (roomId: string) => {
             // spin up a peer connection and send offer
-            setUserType("sender");
             console.log("received room_id: ", roomId);
             roomIdRef.current = roomId;
 
@@ -94,7 +91,6 @@ export default function Call() {
 
         socket.on("receive-offer", async (roomId: string) => {
             // spin up a peer connection and receive offer
-            setUserType("receiver");
             console.log("waiting to receive offer")
             console.log("received room_id: ", roomId);
             roomIdRef.current = roomId;
@@ -189,10 +185,9 @@ export default function Call() {
 
 
 
-        pc.onnegotiationneeded = (event) => {
-            console.log("negotiation needed!")
-            // to setup addition/removal of tracks
-        }
+        // pc.onnegotiationneeded = (event) => {
+        //     console.log("negotiation needed!")
+        // }
         
         return pc
     }, []);

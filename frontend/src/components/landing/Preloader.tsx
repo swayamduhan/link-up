@@ -65,7 +65,7 @@ export default function Preloader(){
             <motion.div className="fixed isolate inset-0 z-[20] text-neutral-100 grid grid-cols-20" variants={parentVariants} initial="open" exit="exit">
                 {/* text at center */}
                 <motion.div key="preloader-text" className="absolute z-[30] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-6xl font-thin italic" variants={textVariants}>Loading Linkup...</motion.div>
-                {Array.from({ length: 20 }).map((x, index) => (
+                {Array.from({ length: 20 }).map((_, index) => (
                     <div key={index} className="w-full h-full overflow-x-hidden border border-neutral-400/30">
                         <motion.div variants={gridVariants} className="h-full bg-neutral-900 relative"></motion.div>
                     </div>

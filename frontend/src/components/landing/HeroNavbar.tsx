@@ -1,4 +1,4 @@
-import MaskText from "../MaskTest"
+import MaskText from "../MaskText"
 
 interface NavLinkInterface {
     number: string,

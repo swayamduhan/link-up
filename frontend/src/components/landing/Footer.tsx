@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom"
-
 export default function Footer(){
     return (
         <footer className="font-montreal p-6 backdrop-blur-sm">

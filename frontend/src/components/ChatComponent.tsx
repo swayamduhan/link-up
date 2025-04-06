@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Chat, useChatStore } from "../store/chatStore"
+import { useChatStore } from "../store/chatStore"
 import ChatStoreComponent from "./ChatStoreComponent"
 
 export default function ChatComponent({ receivedVideo, dataChannelRef }: {receivedVideo : boolean, dataChannelRef: React.RefObject<RTCDataChannel | null>}){

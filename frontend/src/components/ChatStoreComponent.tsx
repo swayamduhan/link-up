@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Chat } from "../store/chatStore";
-import { motion, useMotionTemplate } from "motion/react"
+import { motion } from "motion/react"
 
 export default function ChatStoreComponent({ chats }: { chats: Chat[]}){
 

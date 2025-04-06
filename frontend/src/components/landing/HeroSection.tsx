@@ -5,7 +5,6 @@ import ExcalamationDoodle from "../../assets/exc_doodle.png"
 import BalloonDoodle from "../../assets/balloon_doodle.png"
 import HeroNavbar from "./HeroNavbar"
 import { motion } from "motion/react"
-import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 export default function HeroSection(){
