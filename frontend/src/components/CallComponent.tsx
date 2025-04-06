@@ -53,11 +53,6 @@ export default function CallComponent({
         }
     }, [chatOpen])
 
-    useEffect(() => {
-        console.log("CHAT STATE CHANGED")
-        // set local video and remote video again on state change because of component re mount
-    }, [chatOpen])
-
     function handleChatOpen(){
         setChatOpen(true)
     }
