@@ -1,19 +1,33 @@
 import MaskText from "../MaskTest"
 
+interface NavLinkInterface {
+    number: string,
+    name: string,
+    onclick: () => void
+}
+
 export default function HeroNavbar(){
 
-    const navbarLinks = [
+    function scrollToAbout(){
+        const aboutSection = document.getElementById("about")
+        aboutSection?.scrollIntoView({ behavior: "smooth" })
+    }
+
+    const navbarLinks : NavLinkInterface[] = [
         {
             number: "01",
-            name: "How to"
+            name: "About",
+            onclick: scrollToAbout
         },
         {
             number: "02",
-            name: "FAQ"
+            name: "FAQ",
+            onclick: () => {}
         },
         {
             number: "03",
-            name: "Contact"
+            name: "Contact",
+            onclick: () => {}
         }
     ]
 
@@ -21,10 +35,10 @@ export default function HeroNavbar(){
         <nav className="h-auto p-4 px-[10%] flex justify-start gap-20 font-montreal text-lg font-thin">
             {navbarLinks.map(item => (
                 <MaskText>
-                    <div className="flex gap-2 items-end cursor-pointer">
+                    <button className="flex gap-2 items-end cursor-pointer" onClick={item.onclick}>
                         <div>{item.number}</div>
                         <div className="text-2xl">{item.name}</div>
-                    </div>
+                    </button>
                 </MaskText>
             ))}
         </nav>

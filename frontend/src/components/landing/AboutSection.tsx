@@ -1,17 +1,39 @@
 import StackedPop from "./StackedPop";
+import { motion, Variants } from "motion/react"
 
 // contains 
 export default function AboutSection(){
+
+    const upcomingFeatures = [
+        "TURN server to allow connections on firewall blocks",
+        "Screen sharing",
+        "Live reactions",
+        "Turn off/on video and audio mid-call"
+    ]
+
+    const parentVariants: Variants = {
+        "out" : {
+            transition : {
+                staggerChildren: 0.2
+            }
+        },
+        "in" : {
+            transition : {
+                staggerChildren: 0.2
+            }
+        }
+    }
+
     return (
-        <section className="mt-20 space-y-20">
-            <div className="text-[2.5rem] text-center">How to LinkUp?</div>
+        <section id="about" className="mt-20 space-y-20">
+            <div className="text-[2.5rem] text-center">Upcoming Features</div>
 
             {/* Stacked Pops container */}
-            <div className="px-20 mb-40">
-                <StackedPop title="This is title">
-                    This is content
-                </StackedPop>
-            </div>
+            <motion.div className="px-20 mb-40" variants={parentVariants} initial="out" whileInView="in" viewport={{ once: true, amount: 0.2}}>
+                {upcomingFeatures.map((feature, idx) => (
+                    <StackedPop title={feature} key={idx}/>
+                ))}
+            </motion.div>
         </section>
     )
 }

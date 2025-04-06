@@ -16,22 +16,22 @@ export default function HeroSection(){
             <HeroNavbar />
 
             {/* glass morphic container */}
-            <div className="h-auto max-h-[90vh] w-[80%] rounded-sm p-2 bg-white/20 absolute translate-x-[50%] top-[50%] translate-y-[-50%] shadow-[0px_0px_100px_5px_#ffffff40] preserve-3d perspective-[1000px] rotate-x-[10deg] rotate-y-[-20deg] rotate-z-[2deg]">
+            <motion.div className="h-auto max-h-[90vh] w-[80%] rounded-sm p-2 bg-white/20 absolute translate-x-[50%] top-[50%] translate-y-[-50%] shadow-[0px_0px_100px_5px_#ffffff40] preserve-3d perspective-[1000px]" initial={{y: 20, opacity: 0, filter: "blur(10px)", rotateX: "10deg", rotateY: "-20deg", rotateZ: "2deg"}} animate={{y:0, opacity: 1, filter: "blur(0px)"}} transition={{ delay: 1.2, duration: 0.3}}>
                 <img src={Mockup} alt="Mockup image" className="rounded-sm object-cover w-full h-auto"/>
-            </div>
+            </motion.div>
 
             {/* TEXT CONTENT */}
             <div className="absolute top-[50%] translate-y-[-50%] left-[10%] space-y-2">
-                <h1 className="text-6xl font-thin tracking-[-2px]">
+                <motion.h1 className="text-6xl font-thin tracking-[-2px] relative" initial={{y: 20, opacity: 0, filter: "blur(10px)"}} animate={{y:0, opacity: 1, filter: "blur(0px)"}} transition={{ delay: 0.8, duration: 0.3}}>
                     <span className="italic">L</span>
                     <span>ink</span>
                     <span className="italic">U</span>
                     <span>p</span>
-                </h1>
-                <p className="font-montreal font-thin text-xl max-w-[300px]">
+                </motion.h1>
+                <motion.p className="font-montreal font-thin text-xl max-w-[300px] relative" initial={{y: 20, opacity: 0, filter: "blur(10px)"}} animate={{y:0, opacity: 1, filter: "blur(0px)"}} transition={{ delay: 0.9, duration: 0.3}}>
                     Because sometimes the best convos are with the people you never meet again :)
-                </p>
-                <motion.button onClick={() => navigate("/call")} className="text-lg border bg-neutral-100 text-neutral-900 px-4 py-2 font-montreal mt-10 tracking-[3px] cursor-pointer group flex items-center">
+                </motion.p>
+                <motion.button onClick={() => navigate("/call")} className="text-lg border bg-neutral-100 text-neutral-900 px-4 py-2 font-montreal mt-10 tracking-[3px] cursor-pointer group flex items-center relative" initial={{y: 20, opacity: 0, filter: "blur(10px)"}} animate={{y:0, opacity: 1, filter: "blur(0px)"}} transition={{ delay: 1, duration: 0.3}}>
                     <div className="inline-block">Fire up a convo</div>
                     <motion.div className={`inline-block w-0 group-hover:w-8 overflow-hidden rotate-[-180deg] group-hover:rotate-[0deg] duration-300 scale-0 group-hover:scale-100 transition-all`} >
                         <Arrow />
