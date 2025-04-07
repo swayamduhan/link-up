@@ -21,13 +21,13 @@ export default function HeroSection(){
 
             {/* TEXT CONTENT */}
             <div className="absolute top-[50%] translate-y-[-50%] left-[10%] space-y-2">
-                <motion.h1 className="text-6xl font-thin tracking-[-2px] relative" initial={{y: 20, opacity: 0, filter: "blur(10px)"}} animate={{y:0, opacity: 1, filter: "blur(0px)"}} transition={{ delay: 0.8, duration: 0.3}}>
+                <motion.h1 className="text-4xl xl:text-6xl font-thin tracking-[-2px] relative" initial={{y: 20, opacity: 0, filter: "blur(10px)"}} animate={{y:0, opacity: 1, filter: "blur(0px)"}} transition={{ delay: 0.8, duration: 0.3}}>
                     <span className="italic">L</span>
                     <span>ink</span>
                     <span className="italic">U</span>
                     <span>p</span>
                 </motion.h1>
-                <motion.p className="font-montreal font-thin text-xl max-w-[300px] relative" initial={{y: 20, opacity: 0, filter: "blur(10px)"}} animate={{y:0, opacity: 1, filter: "blur(0px)"}} transition={{ delay: 0.9, duration: 0.3}}>
+                <motion.p className="font-montreal font-thin text-lg xl:text-xl max-w-[300px] relative" initial={{y: 20, opacity: 0, filter: "blur(10px)"}} animate={{y:0, opacity: 1, filter: "blur(0px)"}} transition={{ delay: 0.9, duration: 0.3}}>
                     Because sometimes the best convos are with the people you never meet again :)
                 </motion.p>
                 <motion.button onClick={() => navigate("/call")} className="text-lg border bg-neutral-100 text-neutral-900 px-4 py-2 font-montreal mt-10 tracking-[3px] cursor-pointer group flex items-center relative" initial={{y: 20, opacity: 0, filter: "blur(10px)"}} animate={{y:0, opacity: 1, filter: "blur(0px)"}} transition={{ delay: 1, duration: 0.3}}>

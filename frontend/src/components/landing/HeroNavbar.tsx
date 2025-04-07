@@ -32,7 +32,7 @@ export default function HeroNavbar(){
     ]
 
     return (
-        <nav className="h-auto p-4 px-[10%] flex justify-start gap-20 font-montreal text-lg font-thin">
+        <nav className="h-auto p-4 px-[10%] flex justify-start gap-20 font-montreal text-lg font-thin relative z-[18] backdrop-blur-sm">
             {navbarLinks.map(item => (
                 <MaskText>
                     <button className="flex gap-2 items-end cursor-pointer" onClick={item.onclick}>

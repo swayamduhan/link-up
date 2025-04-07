@@ -63,13 +63,12 @@ export default function CallComponent({
         <AnimatePresence mode="wait">
         {chatOpen ? (
             <>
-            <motion.div key="video-component" layoutId="video-component" className="relative flex-1 p-4 grid grid-rows-2">
+            <motion.div key="video-component" layoutId="video-component" className="relative flex-1 p-4 grid grid-rows-2 gap-1">
                 <div className="absolute h-[75%] right-0 border mt-28 border-neutral-400/30"></div>
                 <motion.div className="flex items-center justify-center">
-                    {/* REMOTE VIDEO CONTAINER */}
                     {receivedVideo ? 
-                        <motion.div layoutId="remote-container" layout="position" className="w-4/5 h-[400px] mx-auto relative">
-                            <video key="remote-video" id="remoteVideo" className="rounded-sm w-full h-full object-cover" autoPlay playsInline controls={false} ref={remoteVideoRef} />
+                        <motion.div layoutId="remote-container" layout="position" className="w-3/4 xl:w-4/5 h-auto mx-auto relative">
+                            <video key="remote-video" id="remoteVideo" className="rounded-sm w-full max-h-[400px] object-cover" autoPlay playsInline controls={false} ref={remoteVideoRef} />
                         </motion.div>
                         :
                         <motion.div layout="position" layoutId="waiting-conn" className="text-2xl">Waiting for connection...</motion.div>
@@ -77,8 +76,8 @@ export default function CallComponent({
                 </motion.div>
                 <motion.div className="flex items-center justify-center">
                     {/* LOCAL VIDEO CONTAINER */}
-                    <motion.div layoutId="local-container" className="w-4/5 h-[400px] mx-auto relative">
-                        <video key="local-video" id="localVideo" className="rounded-sm w-full h-full object-cover" autoPlay playsInline controls={false} ref={localVideoRef}></video>
+                    <motion.div layoutId="local-container" className="w-3/4 xl:w-4/5 h-auto mx-auto relative">
+                        <video key="local-video" id="localVideo" className="rounded-sm w-full max-h-[400px] object-cover" autoPlay playsInline controls={false} ref={localVideoRef}></video>
                     </motion.div>
                 </motion.div>
             </motion.div>
@@ -128,7 +127,7 @@ export default function CallComponent({
                     ) : (
                         <div className="h-full border border-neutral-400 grid grid-rows-4 items-center justify-center">
                             {/* Video Container */}
-                            <motion.div layoutId="local-container" className="h-[500px] w-[500px] row-span-3">
+                            <motion.div layoutId="local-container" className="w-full max-w-[600px] row-span-3">
                                 <video key="local-video" id="localVideo" className="w-full h-full object-cover" autoPlay playsInline controls={false} ref={localVideoRef}></video>
                             </motion.div>
                             <motion.div layout="position" layoutId="waiting-conn" className="row-span-1 flex items-center justify-center">

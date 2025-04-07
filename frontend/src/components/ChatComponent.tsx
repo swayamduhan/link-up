@@ -24,11 +24,11 @@ export default function ChatComponent({ receivedVideo, dataChannelRef }: {receiv
 
     return (
         <div className="border border-neutral-400/30 rounded-sm h-full p-4 flex flex-col gap-4">
-            <div className="text-4xl">Stranger Chat</div>
+            <div className="text-2xl xl:text-4xl">Stranger Chat</div>
             {receivedVideo ? (
                 <div className="relative flex-1 font-montreal font-normal flex flex-col gap-4">
                     <ChatStoreComponent chats={chats}/>
-                    <div className="h-14 bg-neutral-800 rounded-sm flex px-2 py-2 gap-2">
+                    <div className="h-10 xl:h-14 bg-neutral-800 rounded-sm flex p-1 xl:p-2 gap-2">
                         <input onChange={(e) => setMessage(e.target.value)} className="flex-1 rounded-sm px-2 focus:border focus:border-neutral-400/30 focus:outline-none"value={message}/>
                         <button className="border px-4 bg-neutral-100 text-neutral-900 rounded-sm" onClick={() => sendMessage(message, setMessage, addChat, dataChannelRef)} ref={sendButtonRef}>Send</button>
                     </div>

@@ -289,7 +289,7 @@ export default function Call() {
                 </div>
 
                 {/* footer on scroll */}
-                <footer>Hello this is footer</footer>
+                {/* <footer>Hello this is footer</footer> */}
             </div>
         </div>
     )
