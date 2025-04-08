@@ -5,10 +5,10 @@ import { motion, Variants } from "motion/react"
 export default function AboutSection(){
 
     const upcomingFeatures = [
-        "TURN server to allow connections on firewall blocks",
         "Screen sharing",
         "Live reactions",
-        "Turn off/on video and audio mid-call"
+        "Interest based matching",
+        "Turn off/on video and audio mid-call",
     ]
 
     const parentVariants: Variants = {
