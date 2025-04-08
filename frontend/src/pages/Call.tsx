@@ -23,6 +23,17 @@ export default function Call() {
     const { addChat } = useChatStore()
     const navigate = useNavigate()
 
+    const iceServers : RTCIceServer[] = [
+        { 
+            urls: 'stun:stun.l.google.com:19302'
+        },
+        { 
+            urls: 'turn:turn.linkup.swayd.live:3478',
+            username: import.meta.env.VITE_TURN_USERNAME,
+            credential: import.meta.env.VITE_TURN_PASSWORD
+        }
+    ]
+
 
     // WORKFLOW : don't connect to the socket until local stream setup is done
     useEffect(() => {
@@ -144,7 +155,7 @@ export default function Call() {
             return;
         };
 
-        const configuration : RTCConfiguration = {'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]}
+        const configuration : RTCConfiguration = {'iceServers': iceServers}
         const pc = new RTCPeerConnection(configuration);
         peerConnectionRef.current = pc;
 
