@@ -184,7 +184,17 @@ export default function Call() {
             setReceivedVideo(true)
         }
 
+        pc.onconnectionstatechange = () => {
+            if(pc.connectionState === "failed"){
+                alert("either of the peers has a NAT firewall / blocked UDP port issue! unable to make a connection. this issue will be solved after i get enough resources to setup a TURN server.\n REFRESH THE WEBSITE")
+            }
+        }
 
+        pc.oniceconnectionstatechange = () => {
+            if(pc.iceConnectionState === "failed"){
+                alert("either of the peers has a NAT firewall / blocked UDP port issue! unable to make a connection. this issue will be solved after i get enough resources to setup a TURN server.\n REFRESH THE WEBSITE")
+            }
+        }
 
         // pc.onnegotiationneeded = (event) => {
         //     console.log("negotiation needed!")
