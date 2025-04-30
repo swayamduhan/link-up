@@ -52,7 +52,6 @@ export default function Preloader(){
         } else {
             window.addEventListener("load", loadDone)
         }
-
         return () => window.removeEventListener("load", loadDone)
     }, [])
 

@@ -1,4 +1,4 @@
-import SpectralGradient from "../../assets/spectral-gradient.jpg"
+import SpectralGradient from "../../assets/spectral-gradient.webp"
 
 export default function Background(){
     return (
